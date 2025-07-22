@@ -14,7 +14,7 @@ git clone https://github.com/Vladimir-prog551/security-service.git
 2. tester.app.refresh.expirationMs отвечает за время жизни refresh токена (миллисекунды)
 По умолчанию время жизни access токена = 20 секунд, а refresh токена = 60 секунд
 ```
-cd tester/src/main/resources
+cd security-service/tester/src/main/resources
 ```
 После указания нужного времени жизни токенов нужно собрать проект:
 ```
