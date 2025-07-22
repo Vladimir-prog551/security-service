@@ -19,7 +19,7 @@ cd security-service/tester/src/main/resources
 После указания нужного времени жизни токенов нужно собрать проект:
 ```
 cd ../../../../
-mvn clean install
+mvn clean package
 ```
 Запуск с помощью Docker Compose:
 ```
