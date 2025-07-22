@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refresh Token</title>
+    <script>
+        async function refreshToken() {
+            const refreshToken = localStorage.getItem('refreshToken');
+            const messageDiv = document.getElementById('message');
+
+            if (!refreshToken) {
+                messageDiv.innerHTML = 'No refresh token found. Please <a href="/auth/login.html">log in</a>.';
+                return;
+            }
+
+            try {
+                const response = await fetch('/auth/refresh', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ refreshToken })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+                    messageDiv.innerHTML = 'Token refreshed successfully! <a href="/auth/protected.html">Go to protected content</a>.';
+                } else {
+                    const error = await response.text();
+                    if (error.includes('expired')) {
+                        localStorage.removeItem('accessToken');
+                        localStorage.removeItem('refreshToken');
+                        messageDiv.innerHTML = 'Refresh token expired. Please <a href="/auth/login.html">log in</a>.';
+                    } else {
+                        messageDiv.innerHTML = 'Error: ' + error;
+                    }
+                }
+            } catch (error) {
+                messageDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</head>
+<body>
+<button onclick="refreshToken()">Refresh Token</button>
+<div id="message"></div>
+<br>
+<a href="/auth/index.html">Back</a>
+</body>
+</html>

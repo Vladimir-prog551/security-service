@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "tester.app.secret",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "tester.app.access.expirationMs",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "tester.app.refresh.expirationMs",
+      "type": "java.lang.Integer"
+    }
+  ]
+}

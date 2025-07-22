@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protected Content</title>
+    <script>
+        async function checkProtectedContent() {
+            const accessToken = localStorage.getItem('accessToken');
+            const contentDiv = document.getElementById('content');
+
+            if (!accessToken) {
+                contentDiv.innerHTML = 'Please <a href="/auth/login.html">log in</a> to view protected content.';
+                return;
+            }
+
+            try {
+                const response = await fetch('/auth/protected', {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.text();
+                    contentDiv.innerHTML = data;
+                } else if (response.status === 401) {
+                    contentDiv.innerHTML = 'Access token expired. Please <a href="/auth/refresh.html">refresh your token</a> or <a href="/auth/login.html">log in</a>.';
+                } else {
+                    contentDiv.innerHTML = 'Error accessing protected content.';
+                }
+            } catch (error) {
+                contentDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+
+        window.onload = checkProtectedContent;
+    </script>
+</head>
+<body>
+<div id="content">Loading...</div>
+<br>
+<a href="/auth/index.html">Back</a>
+</body>
+</html>

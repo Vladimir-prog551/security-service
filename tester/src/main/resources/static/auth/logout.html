@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logout</title>
+  <script>
+    async function logout() {
+      const username = localStorage.getItem('username');
+      const accessToken = localStorage.getItem('accessToken');
+      const messageDiv = document.getElementById('message');
+
+      if (!username || !accessToken) {
+        messageDiv.innerHTML = 'Not logged in. Please <a href="/auth/login.html">log in</a>.';
+        return;
+      }
+
+      try {
+        const response = await fetch('/auth/revoke', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          },
+          body: JSON.stringify({ username })
+        });
+
+        if (response.ok) {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('username');
+          messageDiv.innerHTML = 'Logged out successfully. <a href="/auth/login.html">Log in again</a>.';
+        } else {
+          messageDiv.innerHTML = 'Error during logout.';
+        }
+      } catch (error) {
+        messageDiv.innerHTML = 'Error: ' + error.message;
+      }
+    }
+
+    window.onload = logout;
+  </script>
+</head>
+<body>
+<div id="message">Logging out...</div>
+<br>
+<a href="/auth/index.html">Back</a>
+</body>
+</html>

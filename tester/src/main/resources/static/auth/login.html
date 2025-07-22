@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script>
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+                    localStorage.setItem('username', username); // Сохраняем username
+                    messageDiv.innerHTML = 'Login successful! <a href="/auth/protected.html">Go to protected content</a>.';
+                } else {
+                    messageDiv.innerHTML = 'Login failed: ' + await response.text();
+                }
+            } catch (error) {
+                messageDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</head>
+<body>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<div id="message"></div>
+<br>
+<a href="/auth/index.html">Back</a>
+</body>
+</html>
