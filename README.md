@@ -1,0 +1,40 @@
+# Сервис авторизации пользователей
+
+# О сервисе
+Данное приложение разработано с использованием модулей фреймворка spring boot (data jpa, security, web), базы данных postgreSQL и библиотеки для создания и проверки JWT (jjwt).
+Сервис позволяет регистрироваться новым пользователям и авторизовываться уже существующим пользователям. Имеется возможность выйти из учётной записи, обновить access токен. Время жизни access и refresh токенов ограничено и настраиваемо.
+
+# Старт через Docker
+Склонировать репозиторий
+```
+git clone https://github.com/Vladimir-prog551/security-service.git
+```
+Затем можно настроить время жизни токенов в файле application.properties
+1. tester.app.access.expirationMs отвечает за время жизни access токена (миллисекунды)
+2. tester.app.refresh.expirationMs отвечает за время жизни refresh токена (миллисекунды)
+По умолчанию время жизни access токена = 20 секунд, а refresh токена = 60 секунд
+```
+cd tester/src/main/resources
+```
+После указания нужного времени жизни токенов нужно собрать проект:
+```
+cd ../../../
+mvn clean install
+```
+Запуск с помощью Docker Compose:
+```
+cd ../
+docker-compose up --build
+```
+
+# Использование
+1. Стартовая страница сервиса
+```
+http://localhost:8080/auth/index.html
+```
+2. Для регистрации нужно перейти на страницу register (адрес http://localhost:8080/auth/register.html)
+3. После регистрации нужно перейти на страницу login (адрес http://localhost:8080/auth/login.html)
+4. Ссылка 'Back' на страницах ведёт на стартовую страницу (адрес http://localhost:8080/auth/index.html)
+5. Чтобы выйти из учётной записи, нужно перейти на страницу logout (адрес http://localhost:8080/auth/logout.html). Если вы авторизовались, то у вас получится выйти из учётной записи
+6. Для обновления access токена нужно перейти по ссылке Refresh Token (адрес http://localhost:8080/auth/refresh.html). Если вы авторизовались и refresh токен ещё действителен, то при нажатии на кнопку Refresh Token у вас обновится access токен
+7. Ссылка Protected Content ведёт на защищённую страницу, которая доступна только тем, у кого есть действительынй access токен (адрес http://localhost:8080/auth/protected.html)
